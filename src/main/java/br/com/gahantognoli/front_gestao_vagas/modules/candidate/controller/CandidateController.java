@@ -1,8 +1,8 @@
 package br.com.gahantognoli.front_gestao_vagas.modules.candidate.controller;
 
-import br.com.gahantognoli.front_gestao_vagas.modules.candidate.service.CandidateService;
-import br.com.gahantognoli.front_gestao_vagas.modules.candidate.service.FindJobService;
-import br.com.gahantognoli.front_gestao_vagas.modules.candidate.service.ProfileCandidateService;
+import br.com.gahantognoli.front_gestao_vagas.modules.candidate.dto.CreateCandidateDTO;
+import br.com.gahantognoli.front_gestao_vagas.modules.candidate.service.*;
+import br.com.gahantognoli.front_gestao_vagas.utils.FormatErrorMessage;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,11 +16,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/candidate")
@@ -34,6 +36,12 @@ public class CandidateController {
 
     @Autowired
     private FindJobService findJobService;
+
+    @Autowired
+    private ApplyJobService applyJobService;
+
+    @Autowired
+    private CreateCandidateService createCandidateService;
 
     @GetMapping("/login")
     public String login() {
@@ -93,6 +101,36 @@ public class CandidateController {
         } catch (HttpClientErrorException e) {
             return "redirect:/candidate/login";
         }
+    }
+
+    @PostMapping("/jobs/apply")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    public String applyJob(@RequestParam("jobId") UUID jobId, RedirectAttributes redirectAttributes) {
+        try {
+            this.applyJobService.execute(getToken(), jobId);
+            return "redirect:/candidate/jobs";
+        } catch (HttpClientErrorException e) {
+            return "redirect:/candidate/jobs";
+        }
+    }
+
+    @GetMapping("/create")
+    public String create(Model model) {
+        model.addAttribute("candidate", new CreateCandidateDTO());
+        return "candidate/create";
+    }
+
+    @PostMapping("/create")
+    public String createCandidate(CreateCandidateDTO candidate, Model model) {
+        try {
+            this.createCandidateService.execute(candidate);
+        } catch (HttpClientErrorException e) {
+            model.addAttribute("error_message",
+                FormatErrorMessage.formatErrorMessage(e.getResponseBodyAsString()));
+        }
+
+        model.addAttribute("candidate", candidate);
+        return "candidate/create";
     }
 
     private String getToken() {
