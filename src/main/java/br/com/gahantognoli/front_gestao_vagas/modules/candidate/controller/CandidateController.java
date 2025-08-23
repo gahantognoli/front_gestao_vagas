@@ -1,10 +1,12 @@
 package br.com.gahantognoli.front_gestao_vagas.modules.candidate.controller;
 
 import br.com.gahantognoli.front_gestao_vagas.modules.candidate.service.CandidateService;
+import br.com.gahantognoli.front_gestao_vagas.modules.candidate.service.ProfileCandidateService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +26,9 @@ public class CandidateController {
 
     @Autowired
     private CandidateService candidateService;
+
+    @Autowired
+    private ProfileCandidateService profileCandidateService;
 
     @GetMapping("/login")
     public String login() {
@@ -46,7 +51,7 @@ public class CandidateController {
                 null,
                 new HashSet<GrantedAuthority>(grants)
             );
-            auth.setDetails(token);
+            auth.setDetails(token.getAccess_token());
             var securityContext = SecurityContextHolder.getContext();
             securityContext.setAuthentication(auth);
             session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
@@ -62,6 +67,8 @@ public class CandidateController {
     @GetMapping("/profile")
     @PreAuthorize("hasRole('CANDIDATE')")
     public String profile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var result = this.profileCandidateService.execute(authentication.getDetails().toString());
         return "candidate/profile";
     }
 }
