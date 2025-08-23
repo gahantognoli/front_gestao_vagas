@@ -4,25 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Cadastro do candidato</title>
+    <title>Cadastro do Empresa</title>
 </head>
-<body class="bg-gray-900 h-screen flex items-center justify-center">
-<form id="submitForm" class="flex gap-24" th:action="@{/candidate/create}" method="post" th:object="${candidate}">
+<body class="bg-sky-950 h-screen flex items-center justify-center">
+<form id="submitForm" class="flex gap-24" th:action="@{/company/create}" method="post" th:object="${company}">
     <div class="space-y-8 bg-zinc-950 p-10 rounded-lg shadow-lg">
-        <p class="text-white">Candidato, crie seu cadastro gratuitamente.</p>
+        <p class="text-white">Empresa, crie seu cadastro gratuitamente.</p>
 
-        <input
-            th:field="*{username}"
-            type="text"
-            name="username"
-            class="bg-gray-50 text-gray-900 p-3 text-xd rounded w-96 block focus:outline-none focus:ring-green-600 focus:ring-2"
-            placeholder="Digite seu usuário"/>
-        <input
-            th:field="*{name}"
-            type="text"
-            name="name"
-            class="bg-gray-50 text-gray-900 p-3 text-xd rounded w-96 block focus:outline-none focus:ring-green-600 focus:ring-2"
-            placeholder="Digite seu nome" />
+        <div class="flex flex-row gap-10">
+            <input
+                th:field="*{username}"
+                type="text"
+                name="username"
+                class="bg-gray-50 text-gray-900 p-3 text-xd rounded w-96 block focus:outline-none focus:ring-green-600 focus:ring-2"
+                placeholder="Digite seu usuário"/>
+            <input
+                th:field="*{name}"
+                type="text"
+                name="name"
+                class="bg-gray-50 text-gray-900 p-3 text-xd rounded w-96 block focus:outline-none focus:ring-green-600 focus:ring-2"
+                placeholder="Digite seu nome"/>
+        </div>
+
+        <div class="flex flex-row gap-10">
         <input
             th:field="*{email}"
             type="email"
@@ -35,26 +39,38 @@
             name="password"
             class="bg-gray-50 text-gray-900 p-3 text-xd rounded w-96 block focus:outline-none focus:ring-green-600 focus:ring-2"
             placeholder="Digite sua senha"/>
+        </div>
+
+        <div class="flex flex-row gap-10">
         <input
             type="password"
             name="confirmPassword"
             class="bg-gray-50 text-gray-900 p-3 text-xd rounded w-96 block focus:outline-none focus:ring-green-600 focus:ring-2"
             placeholder="Confirme sua senha"/>
+        <input
+            th:field="*{website}"
+            type="text"
+            name="website"
+            class="bg-gray-50 text-gray-900 p-3 text-xd rounded w-96 block focus:outline-none focus:ring-green-600 focus:ring-2"
+            placeholder="Digite seu website"/>
+        </div>
+
         <textarea
             th:field="*{description}"
             name="description"
-            class="bg-gray-50 text-gray-900 p-3 text-xd rounded w-96 block focus:outline-none focus:ring-green-600 focus:ring-2"
+            class="bg-gray-50 text-gray-900 p-3 text-xd rounded w-full block focus:outline-none focus:ring-green-600 focus:ring-2"
             placeholder="Digite uma breve descrição sobre você"></textarea>
 
         <p class="text-red-500 text-center" th:if="${error_message}" th:text="${error_message}"></p>
         <p class="text-red-500 text-center hidden" id="passwordError">As senhas não conferem</p>
 
-        <button class="bg-green-900 w-96 rounded p-4 text-white hover:bg-green-700">Cadastre-se</button>
+        <button class="bg-green-600 w-full rounded p-4 text-white hover:bg-green-700">Cadastre-se</button>
         <p class="mt-4 text-white">
             Já tem uma conta?
-            <a href="/candidate/login"
+            <a href="/company/login"
                class="text-center text-green-700 hover:text-green-600">Faça login aqui</a>
         </p>
+
     </div>
 
     <div class="text-white max-w-80 text-6xl flex items-center">
